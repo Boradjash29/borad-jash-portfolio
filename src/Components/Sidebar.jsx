@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function Sidebar() {
   const [activeSection, setActiveSection] = useState("about");
+  const navRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +27,32 @@ function Sidebar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const navElement = navRef.current;
+    if (!navElement) {
+      return;
+    }
+
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (!isMobile || navElement.scrollWidth <= navElement.clientWidth) {
+      return;
+    }
+
+    const activeLink = navElement.querySelector(`a[data-section="${activeSection}"]`);
+    if (!activeLink) {
+      return;
+    }
+
+    const leftPadding = 12;
+    const offsetLeft = activeLink.offsetLeft;
+    const targetLeft = Math.max(0, offsetLeft - leftPadding);
+
+    navElement.scrollTo({
+      left: targetLeft,
+      behavior: "smooth",
+    });
+  }, [activeSection]);
+
   const handleNavClick = (section) => {
     setActiveSection(section);
   };
@@ -37,9 +64,10 @@ function Sidebar() {
         <h2 className="sidebar-name">Jash Borad</h2>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" ref={navRef}>
         <a
           href="#about"
+          data-section="about"
           className={activeSection === "about" ? "active" : ""}
           onClick={() => handleNavClick("about")}
         >
@@ -47,6 +75,7 @@ function Sidebar() {
         </a>
         <a
           href="#portfolio"
+          data-section="portfolio"
           className={activeSection === "portfolio" ? "active" : ""}
           onClick={() => handleNavClick("portfolio")}
         >
@@ -54,6 +83,7 @@ function Sidebar() {
         </a>
         <a
           href="#skills"
+          data-section="skills"
           className={activeSection === "skills" ? "active" : ""}
           onClick={() => handleNavClick("skills")}
         >
@@ -61,6 +91,7 @@ function Sidebar() {
         </a>
         <a
           href="#experience"
+          data-section="experience"
           className={activeSection === "experience" ? "active" : ""}
           onClick={() => handleNavClick("experience")}
         >
@@ -68,6 +99,7 @@ function Sidebar() {
         </a>
         <a
           href="#education"
+          data-section="education"
           className={activeSection === "education" ? "active" : ""}
           onClick={() => handleNavClick("education")}
         >
@@ -75,6 +107,7 @@ function Sidebar() {
         </a>
         <a
           href="#contact"
+          data-section="contact"
           className={activeSection === "contact" ? "active" : ""}
           onClick={() => handleNavClick("contact")}
         >
