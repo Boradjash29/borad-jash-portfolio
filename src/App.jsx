@@ -8,16 +8,17 @@ import Contact from "./Components/Contact";
 
 function App() {
   return (
-    <div className="layout">
+    <div className="flex min-h-screen bg-[#050505]">
       <Sidebar />
-      <div className="content">
+      {/* Main content — offset by sidebar width on desktop */}
+      <main className="ml-[268px] w-[calc(100%-268px)] px-14 py-10 max-md:ml-0 max-md:w-full max-md:px-5 max-md:py-6">
         <Hero />
         <Portfolio />
         <Skills />
         <Experience />
         <Education />
         <Contact />
-      </div>
+      </main>
     </div>
   );
 }
