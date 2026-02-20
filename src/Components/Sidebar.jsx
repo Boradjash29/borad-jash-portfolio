@@ -39,11 +39,11 @@ export default function Sidebar() {
   return (
     <div className="sidebar fixed top-0 left-0 h-screen w-[268px] flex flex-col z-50
       bg-[rgba(5,5,5,0.88)] backdrop-blur-xl border-r border-white/[0.07]
-      overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-      max-md:static max-md:w-full max-md:h-auto max-md:flex-row max-md:items-center max-md:overflow-x-visible max-md:overflow-y-visible">
+      overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden justify-between
+      max-md:static max-md:w-full max-md:h-auto max-md:flex-row max-md:items-center max-md:overflow-x-visible max-md:overflow-y-visible max-md:justify-start">
 
       {/* Header */}
-      <div className="text-center px-7 pt-12 pb-10 max-md:text-left max-md:flex max-md:items-center max-md:gap-3 max-md:px-4 max-md:pt-3 max-md:pb-3 flex-shrink-0">
+      <div className="text-center px-7 pt-8 pb-8 max-md:text-left max-md:flex max-md:items-center max-md:gap-3 max-md:px-4 max-md:pt-3 max-md:pb-3 flex-shrink-0">
         <div className="relative inline-block mb-5 max-md:mb-0">
           {/* Spinning glow ring */}
           <div className="absolute inset-[-4px] rounded-full spin-glow z-0"
@@ -86,7 +86,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Socials */}
-      <div className="flex justify-center gap-3 px-5 py-6 mt-5 border-t border-white/[0.06] max-md:hidden">
+      <div className="flex justify-center gap-3 px-5 py-5 flex-shrink-0 border-t border-white/[0.06] max-md:hidden">
         {[
           { href: "https://linkedin.com/in/borad-jash-h2901", label: "LinkedIn", hoverClass: "hover:text-[#0077B5] hover:border-[#0077B5]/35 hover:shadow-[0_0_14px_rgba(0,119,181,0.3)]",
             icon: <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /> },
@@ -99,7 +99,6 @@ export default function Sidebar() {
             rel="noopener noreferrer" aria-label={s.label}
             whileHover={{ y: -3 }}
             className={`flex items-center justify-center w-9 h-9 rounded-xl glass text-slate-400 transition-all duration-250 ${s.hoverClass}`}>
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d={undefined} /></svg>
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">{s.icon}</svg>
           </motion.a>
         ))}
