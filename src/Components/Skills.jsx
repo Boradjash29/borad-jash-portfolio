@@ -1,76 +1,152 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  capabilities, techStacks, certifications, skillTabs, Award,
+} from "../data/profile";
 
-const categories = [
-  { icon: "⌨️", title: "Programming Languages", skills: ["C", "C++", "JavaScript", "Python", "SQL"] },
-  { icon: "⚙️", title: "Frameworks & Libraries", skills: ["Node.js", "Express.js", "React.js", "Django"] },
-  { icon: "🗄️", title: "Databases", skills: ["MongoDB", "PostgreSQL", "SQLite"] },
-  { icon: "🛠️", title: "Developer Tools", skills: ["Git", "GitHub", "VS Code", "Postman"] },
-  { icon: "🤖", title: "Robotics & Systems", skills: ["ROS2", "TF2", "Navigation2", "Visual Odometry", "Linux", "Jetson Orin Nano", "Raspberry Pi"] },
-  { icon: "🌐", title: "Areas of Interest", skills: ["Full Stack Development", "Cloud Computing", "System Design", "Machine Learning", "Big Data Analysis"] },
-];
-
-const certifications = [
-  { name: "Introduction to Internet of Things", detail: "(Gold + Elite) — NPTEL", date: "May 2025" },
-  { name: "Mastering Linux", detail: "— Udemy", date: "Mar 2025" },
-  { name: "SQL (Basic)", detail: "— HackerRank", date: "Oct 2024" },
-  { name: "Programming in C", detail: "— Red & White Skill Education", date: "Jul 2023" },
-];
-
-function SectionHeading({ children }) {
-  return (
-    <motion.h2
-      initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }} transition={{ duration: 0.5 }}
-      className="font-heading font-bold text-[38px] text-white tracking-tight mb-12 flex items-center gap-4">
-      {children}
-      <span className="inline-block h-[3px] w-14 rounded-full bg-gradient-to-r from-blue-500 to-transparent shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-    </motion.h2>
-  );
-}
+const FLOAT_CLASSES = ["float-pill-1", "float-pill-2", "float-pill-3", "float-pill-4", "float-pill-5"];
 
 export default function Skills() {
+  const [activeTab, setActiveTab] = useState("capabilities");
+
   return (
-    <section id="skills" className="mt-[110px] pt-2">
-      <SectionHeading>Technical Skills</SectionHeading>
+    <section id="skills" className="relative z-10 bg-[#f5f5f0] text-[#1a1a1a] py-24 md:py-36 px-6 md:px-12 overflow-hidden">
+      <div className="max-w-[1200px] mx-auto">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-6">
-        {categories.map((cat, i) => (
-          <motion.div key={cat.title}
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.07 }}
-            className="glass rounded-2xl p-5 border border-white/[0.07] hover:border-blue-500/30 hover:bg-white/[0.06] transition-all duration-300">
-            <h3 className="font-heading font-semibold text-blue-400 text-[15px] flex items-center gap-2 mb-4">
-              <span>{cat.icon}</span>{cat.title}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {cat.skills.map(skill => (
-                <motion.span key={skill} whileHover={{ scale: 1.06 }}
-                  className="px-3 py-1.5 rounded-lg text-[12.5px] font-medium bg-white/[0.05] text-slate-300 border border-white/[0.07]
-                  hover:bg-blue-500/[0.12] hover:text-blue-300 hover:border-blue-500/30 hover:shadow-[0_0_10px_rgba(59,130,246,0.14)] transition-all duration-150 cursor-default">
-                  {skill}
-                </motion.span>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }} transition={{ duration: 0.45 }}
-        className="glass rounded-2xl p-6 border border-white/[0.07] hover:border-blue-500/25 hover:bg-white/[0.06] transition-all duration-300">
-        <h3 className="font-heading font-semibold text-blue-400 text-[18px] mb-5">🏆 Certifications</h3>
-        <ul className="space-y-3.5">
-          {certifications.map(cert => (
-            <li key={cert.name} className="text-slate-400 text-sm leading-relaxed pl-5 relative
-              before:absolute before:left-0 before:top-0.5 before:content-['✓'] before:text-green-400 before:font-bold">
-              <strong className="text-slate-200">{cert.name}</strong>{" "}
-              <span className="text-slate-500">{cert.detail}</span>
-              <span className="ml-2 text-xs text-slate-600 bg-white/[0.04] border border-white/[0.07] rounded-full px-2 py-0.5">{cert.date}</span>
-            </li>
+        {/* Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-wrap items-center gap-3 md:gap-6 mb-12 md:mb-16"
+        >
+          {skillTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tracking-mono transition-all duration-300 pb-1 cursor-pointer ${
+                activeTab === tab.id
+                  ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a]"
+                  : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/70"
+              }`}
+            >
+              {activeTab === tab.id ? `( ${tab.label} )` : tab.label}
+            </button>
           ))}
-        </ul>
-      </motion.div>
+        </motion.div>
+
+        {/* Tab content */}
+        <AnimatePresence mode="wait">
+          {activeTab === "capabilities" && (
+            <motion.div
+              key="capabilities"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="relative min-h-[400px] md:min-h-[500px]"
+            >
+              <div className="flex flex-wrap gap-3 md:gap-4 justify-center items-center py-8">
+                {capabilities.map((cap, i) => (
+                  <motion.div
+                    key={cap.label}
+                    initial={{ opacity: 0, scale: 0.5, rotate: Math.random() * 20 - 10 }}
+                    animate={{ opacity: 1, scale: 1, rotate: Math.random() * 8 - 4 }}
+                    transition={{ duration: 0.5, delay: i * 0.06, type: "spring", stiffness: 120 }}
+                    whileHover={{ scale: 1.1, rotate: 0, y: -5 }}
+                    className={`${cap.color} ${FLOAT_CLASSES[i % FLOAT_CLASSES.length]} px-5 md:px-7 py-3 md:py-4 rounded-full text-sm md:text-lg font-semibold cursor-default flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow`}
+                    style={{ animationDelay: `${i * 0.3}s` }}
+                  >
+                    <cap.icon size={18} />
+                    <span>{cap.label}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="text-center text-[#1a1a1a]/40 text-sm mt-8"
+              >
+                Hover to explore...
+              </motion.p>
+            </motion.div>
+          )}
+
+          {activeTab === "tech" && (
+            <motion.div
+              key="tech"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              {techStacks.map((stack, i) => (
+                <motion.div
+                  key={stack.category}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex flex-col md:flex-row md:items-start border-b border-[#1a1a1a]/10 pb-6"
+                >
+                  <h3 className="font-semibold text-lg text-[#1a1a1a] mb-3 md:mb-0 md:w-1/4">
+                    {stack.category}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 md:w-3/4">
+                    {stack.items.map((item) => (
+                      <span
+                        key={item}
+                        className="px-4 py-1.5 rounded-full text-sm font-medium bg-[#1a1a1a]/5 text-[#1a1a1a]/70 border border-[#1a1a1a]/10 hover:bg-[#1a1a1a]/10 hover:border-[#1a1a1a]/20 transition-colors cursor-default"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {activeTab === "certs" && (
+            <motion.div
+              key="certs"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-0"
+            >
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-[#1a1a1a] flex items-center gap-2">
+                  <Award size={20} className="text-amber-500" /> Certifications
+                </h3>
+              </div>
+              {certifications.map((cert, i) => (
+                <motion.div
+                  key={cert.name}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between py-5 border-b border-[#1a1a1a]/10 group"
+                >
+                  <div>
+                    <strong className="text-[#1a1a1a] font-semibold group-hover:text-indigo-600 transition-colors">
+                      {cert.name}
+                    </strong>
+                    <span className="text-[#1a1a1a]/50 text-sm ml-2">{cert.detail}</span>
+                  </div>
+                  <span className="tracking-mono text-[#1a1a1a]/30 mt-1 sm:mt-0 flex-shrink-0">
+                    {cert.date}
+                  </span>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </section>
   );
 }
