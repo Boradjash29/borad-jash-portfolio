@@ -29,9 +29,6 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
           initial="initial"
           animate="opened"
           exit="exit"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) toggle();
-          }}
         >
           {/* Morphing SVG Background */}
           <svg className="absolute top-0 w-full h-[calc(100%+100px)] fill-[#101318]" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -39,7 +36,12 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
           </svg>
 
           {/* Menu Content */}
-          <div className="relative z-10 h-full w-full flex flex-col items-center justify-center pointer-events-auto px-6">
+          <div 
+            className="relative z-10 h-full w-full flex flex-col items-center justify-center pointer-events-auto px-6"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) toggle();
+            }}
+          >
             <div className="flex flex-col gap-6 md:gap-10 items-center">
               {NAV_ITEMS.map((item, i) => (
                 <div key={item.id} className="overflow-hidden">
