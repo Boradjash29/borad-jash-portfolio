@@ -87,7 +87,7 @@ export default function Contact() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative py-8 md:py-12 overflow-hidden"
         >
-          <h2
+          <h2 // Changed to h2 for SEO
             className="text-center font-extrabold leading-none select-none whitespace-nowrap w-full"
             style={{
               fontSize: "clamp(2.5rem, 10vw, 10rem)",

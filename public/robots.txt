@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://borad-jash-portfolio.vercel.app/sitemap.xml

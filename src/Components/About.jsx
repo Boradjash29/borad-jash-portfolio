@@ -7,9 +7,9 @@ export default function About() {
     <section id="about" className="relative bg-[#101318] py-24 md:py-36 px-6 md:px-12">
       <div className="max-w-[1200px] mx-auto">
 
-        <motion.p {...fadeUp} className="tracking-mono text-white/40 mb-12 md:mb-16">
+        <motion.h2 {...fadeUp} className="tracking-mono text-white/40 mb-12 md:mb-16">
           ( ABOUT ME )
-        </motion.p>
+        </motion.h2>
 
         {/* Bio */}
         <motion.div {...fadeUp} className="mb-20 md:mb-28">

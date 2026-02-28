@@ -128,7 +128,7 @@ export default function Hero() {
             transition={{ duration: 1.2, delay: 1, ease: EASE_OUT }}
             className="hidden md:block flex-1 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mt-auto mb-6 origin-left"
           />
-          <h1 
+          <h2 // Changed from h1 for SEO (semantic structure)
             ref={line2Ref}
             className="hero-title italic cursor-default select-none"
             onMouseEnter={() => handleMouseEnter(line2Ref)}
@@ -137,7 +137,7 @@ export default function Hero() {
             style={{ textShadow: buildShadow(0) }}
           >
             developer<span className="text-[#EBDA28]">.</span>
-          </h1>
+          </h2>
         </motion.div>
       </div>
 

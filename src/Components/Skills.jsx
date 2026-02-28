@@ -13,6 +13,9 @@ export default function Skills() {
     <section id="skills" className="relative z-10 bg-[#f5f5f0] text-[#1a1a1a] py-24 md:py-36 px-6 md:px-12 overflow-hidden">
       <div className="max-w-[1200px] mx-auto">
 
+        {/* Section Heading for SEO */}
+        <h2 className="sr-only">Skills and Technical Stacks</h2>
+
         {/* Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
