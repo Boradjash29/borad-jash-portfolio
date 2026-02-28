@@ -6,154 +6,189 @@ import ArrowIcon from "./ArrowIcon";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const VH_PER_TRANSITION = 100;
-const NUM_TRANSITIONS = projects.length - 1;
-const TOTAL_VH = NUM_TRANSITIONS * VH_PER_TRANSITION + 100;
+// How many vh of scroll each card transition occupies
+const VH_PER_CARD = 140; 
+const TOTAL_VH = (projects.length - 1) * VH_PER_CARD + 100;
 
 export default function Portfolio() {
+  const containerRef = useRef(null);
   const stickyRef = useRef(null);
 
   useEffect(() => {
     if (!stickyRef.current) return;
 
-    const cards = gsap.utils.toArray(".stack-card", stickyRef.current);
+    const cards = gsap.utils.toArray(".project-card", stickyRef.current);
     if (cards.length === 0) return;
 
-    const section = stickyRef.current.closest("#projects");
-    if (!section) return;
-
     const ctx = gsap.context(() => {
+      // Pin the section
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        pin: stickyRef.current,
+        pinSpacing: false,
+      });
+
       cards.forEach((card, i) => {
-        if (i === 0) return;
+        if (i === 0) {
+          // First card starts visible, just handle its own parallax
+          gsap.fromTo(
+            card.querySelector(".card-parallax-bg"),
+            { yPercent: -15 },
+            {
+              yPercent: 15,
+              ease: "none",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top top",
+                end: () => `+=${VH_PER_CARD}vh`,
+                scrub: true,
+              }
+            }
+          );
+          return;
+        }
 
-        gsap.set(card, { yPercent: 100 });
+        // Subsequent cards slide in from bottom
+        const startOffset = i * VH_PER_CARD;
 
-        const transStart = ((i - 1) * VH_PER_TRANSITION) / TOTAL_VH;
-        const transEnd = ((i - 1) * VH_PER_TRANSITION + VH_PER_TRANSITION * 0.7) / TOTAL_VH;
+        // Slide in
+        gsap.fromTo(card, 
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            ease: "none", // Critical for 1:1 proportional scroll
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: () => `top+=${startOffset}vh top`,
+              end: () => `top+=${startOffset + 100}vh top`,
+              scrub: true,
+            }
+          }
+        );
 
-        gsap.to(card, {
-          yPercent: 0,
-          ease: "power2.inOut",
+        // Previous card scales down/dims as this one covers it
+        const prevCard = cards[i - 1];
+        gsap.to(prevCard.querySelector(".card-content"), {
+          scale: 0.9,
+          filter: "brightness(0.3)",
+          ease: "none",
           scrollTrigger: {
-            trigger: section,
-            start: () => `top+=${transStart * TOTAL_VH}vh top`,
-            end: () => `top+=${transEnd * TOTAL_VH}vh top`,
-            scrub: 1.5,
-          },
+            trigger: containerRef.current,
+            start: () => `top+=${startOffset}vh top`,
+            end: () => `top+=${startOffset + 100}vh top`,
+            scrub: true,
+          }
         });
 
-        const prevContent = cards[i - 1].querySelector(".card-content");
-        if (prevContent) {
-          gsap.to(prevContent, {
-            scale: 0.92,
-            filter: "brightness(0.25)",
-            ease: "power2.inOut",
+        // Parallax for this card's background
+        gsap.fromTo(
+          card.querySelector(".card-parallax-bg"),
+          { yPercent: -15 },
+          {
+            yPercent: 15,
+            ease: "none",
             scrollTrigger: {
-              trigger: section,
-              start: () => `top+=${transStart * TOTAL_VH}vh top`,
-              end: () => `top+=${transEnd * TOTAL_VH}vh top`,
-              scrub: 1.5,
-            },
-          });
-        }
+              trigger: containerRef.current,
+              start: () => `top+=${startOffset}vh top`,
+              end: () => `top+=${startOffset + VH_PER_CARD}vh top`,
+              scrub: true,
+            }
+          }
+        );
       });
-    }, section);
+    }, containerRef.current);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="projects" className="relative bg-[#101318]">
+    <section id="projects" ref={containerRef} className="relative bg-[#101318]">
+      {/* Scrollable height container */}
       <div style={{ height: `${TOTAL_VH}vh` }} className="relative">
-        <div ref={stickyRef} className="sticky top-0 h-screen w-full overflow-hidden">
-          {projects.map((project, i) => (
-            <div
-              key={project.id}
-              className="stack-card absolute inset-0 w-full h-full"
-              style={{ zIndex: i + 1 }}
-            >
+        <div ref={stickyRef} className="h-screen w-full flex flex-col">
+          {/* Header (stays fixed or moves slightly) */}
+          <div className="absolute top-0 left-0 w-full z-[100] px-6 md:px-14 lg:px-20 pt-8 pb-4 pointer-events-none">
+            <p className="tracking-mono text-xs text-white/30 uppercase mb-2">Selected Work</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+              Projects<span className="text-yellow-400">.</span>
+            </h2>
+          </div>
+
+          <div className="absolute inset-0 overflow-hidden">
+            {projects.map((project, i) => (
               <div
-                className="card-content relative w-full h-full overflow-hidden flex flex-col"
-                style={{ backgroundColor: project.bg }}
+                key={project.id}
+                className="project-card absolute inset-0 w-full h-full overflow-hidden"
+                style={{ zIndex: i + 1 }}
               >
-                {/* Decorative background */}
-                <div className="absolute right-0 top-0 w-1/2 h-full opacity-[0.08] pointer-events-none overflow-hidden">
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      backgroundImage: `linear-gradient(${project.accent}40 1px, transparent 1px), linear-gradient(90deg, ${project.accent}40 1px, transparent 1px)`,
-                      backgroundSize: "60px 60px",
-                    }}
-                  />
-                  <div
-                    className="absolute -right-32 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
-                    style={{ background: `radial-gradient(circle, ${project.accent}30, transparent 70%)` }}
-                  />
-                </div>
+                <div className="card-content relative w-full h-full overflow-hidden">
+                  {/* Parallax Background */}
+                  <div 
+                    className="card-parallax-bg absolute inset-0 scale-[1.4]"
+                    style={{ backgroundColor: project.bg }}
+                  >
+                    <div
+                      className="absolute inset-0 opacity-10"
+                      style={{
+                        backgroundImage: `linear-gradient(${project.accent} 1px, transparent 1px), linear-gradient(90deg, ${project.accent} 1px, transparent 1px)`,
+                        backgroundSize: "60px 60px",
+                      }}
+                    />
+                    <div
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] opacity-20"
+                      style={{ backgroundColor: project.accent }}
+                    />
+                    <span 
+                      className="absolute right-0 bottom-[-5%] text-[24vw] font-black leading-none opacity-[0.03] select-none"
+                      style={{ color: project.accent }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
 
-                {/* Gradient overlay */}
-                <div
-                  className="absolute right-0 top-0 w-2/3 h-full pointer-events-none"
-                  style={{ background: `linear-gradient(90deg, ${project.bg} 0%, transparent 100%)` }}
-                />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10" />
 
-                {/* Top bar */}
-                <div className="relative z-10 flex items-start justify-between p-4 md:p-8 lg:p-10">
-                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-0 md:w-full md:justify-between">
-                    <div className="w-12 h-12 md:w-20 md:h-20 rounded-full border border-white/15 flex flex-col items-center justify-center flex-shrink-0">
-                      <span className="tracking-mono text-white/40 text-[6px] md:text-[8px]">PROJECT</span>
-                      <span className="text-white font-semibold text-xs md:text-base">
-                        {String(i + 1).padStart(2, "0")}{" "}
-                        <span className="text-white/30 font-normal">|</span>{" "}
-                        <span className="text-white/40 font-normal">{String(projects.length).padStart(2, "0")}</span>
-                      </span>
-                    </div>
-                    <p className="tracking-mono text-xs md:text-base font-medium" style={{ color: project.accent }}>
+                  {/* Text Content */}
+                  <div className="relative z-20 h-full flex flex-col justify-center p-8 md:p-14 lg:p-20 max-w-4xl">
+                    <div 
+                      className="w-12 h-1 mb-6 rounded-full" 
+                      style={{ backgroundColor: project.accent }}
+                    />
+                    <p className="tracking-mono text-sm uppercase mb-2 font-medium" style={{ color: project.accent }}>
                       {project.type}
                     </p>
+                    <h3 className="text-4xl md:text-7xl font-bold text-white mb-6 leading-[0.9]">
+                      {project.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      {project.tech.map(t => (
+                        <span key={t} className="px-3 py-1 text-xs border border-white/10 rounded-full text-white/50 bg-white/5">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-white/60 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
+                      {project.description}
+                    </p>
+                    {project.link !== "#" && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex items-center gap-4 w-fit px-8 py-4 rounded-full border border-white/20 hover:border-white/50 transition-all"
+                      >
+                        <span className="text-white font-medium uppercase text-sm tracking-wider">Explore Project</span>
+                        <ArrowIcon className="text-white group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    )}
                   </div>
-                </div>
-
-                {/* Main content */}
-                <div className="relative z-10 mt-auto p-4 md:p-8 lg:p-10 pb-6 md:pb-12 lg:pb-14 max-w-2xl">
-                  <div className="w-10 md:w-16 h-1 rounded-full mb-4 md:mb-6" style={{ backgroundColor: project.accent }} />
-
-                  <h3 className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-3 md:mb-5 tracking-tight">
-                    {project.title}
-                  </h3>
-
-                  <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-3 md:mb-5">
-                    {project.tech.map((t) => (
-                      <span key={t} className="tracking-mono text-[10px] md:text-xs px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-white/10 text-white/50">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="text-white/50 text-xs sm:text-sm md:text-lg max-w-lg leading-relaxed mb-4 md:mb-8">
-                    {project.description}
-                  </p>
-
-                  {project.link !== "#" && (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border border-white/15 hover:border-white/30 hover:bg-white/5 transition-all duration-300"
-                    >
-                      <span className="tracking-mono text-white/70 group-hover:text-white transition-colors text-xs md:text-sm">
-                        ( VISIT SITE
-                      </span>
-                      <ArrowIcon className="text-white/50 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-                      <span className="tracking-mono text-white/70 group-hover:text-white transition-colors text-xs md:text-sm">
-                        )
-                      </span>
-                    </a>
-                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

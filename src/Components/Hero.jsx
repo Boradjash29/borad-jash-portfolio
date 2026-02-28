@@ -44,14 +44,6 @@ export default function Hero() {
     });
   }, []);
 
-  const heroTextProps = (ref) => ({
-    ref,
-    className: "hero-title italic cursor-default select-none",
-    onMouseEnter: () => handleMouseEnter(ref),
-    onMouseLeave: () => handleMouseLeave(ref),
-    onClick: () => handleTap(ref),
-    style: { textShadow: buildShadow(0) },
-  });
 
   return (
     <section className="relative h-[100svh] flex flex-col justify-center md:justify-end overflow-hidden bg-[#101318] px-6 md:px-12 pb-10 md:pb-16">
@@ -76,8 +68,8 @@ export default function Hero() {
             className="max-w-[260px] md:max-w-xs"
           >
             <p className="text-white/60 text-xs md:text-base leading-relaxed">
-              I'm <span className="text-white font-medium">Jash Borad</span>,
-              a software developer passionate about building scalable web apps — with robotics as my creative hobby.
+              I&apos;m <span className="text-white font-medium">Jash Borad</span>,
+              a software developer passionate about building scalable web apps &mdash; with robotics as my creative hobby.
             </p>
           </motion.div>
 
@@ -104,7 +96,16 @@ export default function Hero() {
           transition={{ duration: 0.9, delay: 0.4, ease: EASE_OUT }}
           className="flex items-baseline justify-between"
         >
-          <h1 {...heroTextProps(line1Ref)}>Full Stack</h1>
+          <h1 
+            ref={line1Ref}
+            className="hero-title italic cursor-default select-none"
+            onMouseEnter={() => handleMouseEnter(line1Ref)}
+            onMouseLeave={() => handleMouseLeave(line1Ref)}
+            onClick={() => handleTap(line1Ref)}
+            style={{ textShadow: buildShadow(0) }}
+          >
+            Full Stack
+          </h1>
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -127,7 +128,14 @@ export default function Hero() {
             transition={{ duration: 1.2, delay: 1, ease: EASE_OUT }}
             className="hidden md:block flex-1 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mt-auto mb-6 origin-left"
           />
-          <h1 {...heroTextProps(line2Ref)}>
+          <h1 
+            ref={line2Ref}
+            className="hero-title italic cursor-default select-none"
+            onMouseEnter={() => handleMouseEnter(line2Ref)}
+            onMouseLeave={() => handleMouseLeave(line2Ref)}
+            onClick={() => handleTap(line2Ref)}
+            style={{ textShadow: buildShadow(0) }}
+          >
             developer<span className="text-[#EBDA28]">.</span>
           </h1>
         </motion.div>

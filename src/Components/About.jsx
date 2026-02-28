@@ -15,12 +15,12 @@ export default function About() {
         <motion.div {...fadeUp} className="mb-20 md:mb-28">
           <p className="text-xl md:text-2xl lg:text-3xl text-white/80 leading-relaxed max-w-3xl">
             My goal is to become a skilled software developer, building efficient, scalable
-            applications. I'm passionate about{" "}
+            applications. I&apos;m passionate about{" "}
             <span className="text-white font-semibold">Full Stack Web Development</span>,{" "}
             <span className="text-white font-semibold">Cloud Computing</span>, and{" "}
             <span className="text-white font-semibold">Machine Learning</span>. Beyond coding,
             I love tinkering with <span className="text-white font-semibold">Robotics</span> as
-            a hobby — it's where I explore hardware, ROS, and real-world problem solving.
+            a hobby &mdash; it&apos;s where I explore hardware, ROS, and real-world problem solving.
           </p>
           <p className="text-base md:text-lg text-white/50 mt-6 max-w-2xl">
             Pursuing B.Tech CSE with 9.34 CGPA at G.H Patel College of Engineering & Technology.

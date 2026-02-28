@@ -1,10 +1,5 @@
 /** Shared design tokens and configuration */
 
-export const COLORS = {
-  dark: "#101318",
-  accent: "#EBDA28",
-};
-
 export const EASE_OUT = [0.16, 1, 0.3, 1];
 
 export const NAV_ITEMS = [

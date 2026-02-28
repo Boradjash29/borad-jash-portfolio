@@ -34,7 +34,7 @@ export default function Contact() {
             className="group inline-flex items-center gap-4 px-8 py-4 rounded-full border border-white/15 hover:border-white/30 hover:bg-white/5 transition-all duration-300"
           >
             <span className="tracking-mono text-white/70 group-hover:text-white transition-colors">
-              ( LET'S WORK TOGETHER
+              ( LET&apos;S WORK TOGETHER
             </span>
             <ArrowIcon
               size={16}

@@ -48,20 +48,26 @@ export default function Skills() {
               className="relative min-h-[400px] md:min-h-[500px]"
             >
               <div className="flex flex-wrap gap-3 md:gap-4 justify-center items-center py-8">
-                {capabilities.map((cap, i) => (
-                  <motion.div
-                    key={cap.label}
-                    initial={{ opacity: 0, scale: 0.5, rotate: Math.random() * 20 - 10 }}
-                    animate={{ opacity: 1, scale: 1, rotate: Math.random() * 8 - 4 }}
-                    transition={{ duration: 0.5, delay: i * 0.06, type: "spring", stiffness: 120 }}
-                    whileHover={{ scale: 1.1, rotate: 0, y: -5 }}
-                    className={`${cap.color} ${FLOAT_CLASSES[i % FLOAT_CLASSES.length]} px-5 md:px-7 py-3 md:py-4 rounded-full text-sm md:text-lg font-semibold cursor-default flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow`}
-                    style={{ animationDelay: `${i * 0.3}s` }}
-                  >
-                    <cap.icon size={18} />
-                    <span>{cap.label}</span>
-                  </motion.div>
-                ))}
+                {capabilities.map((cap, i) => {
+                  // Stable random values based on index to satisfy purity
+                  const randomRotate1 = ((i * 13) % 20) - 10;
+                  const randomRotate2 = ((i * 7) % 8) - 4;
+                  
+                  return (
+                    <motion.div
+                      key={cap.label}
+                      initial={{ opacity: 0, scale: 0.5, rotate: randomRotate1 }}
+                      animate={{ opacity: 1, scale: 1, rotate: randomRotate2 }}
+                      transition={{ duration: 0.5, delay: i * 0.06, type: "spring", stiffness: 120 }}
+                      whileHover={{ scale: 1.1, rotate: 0, y: -5 }}
+                      className={`${cap.color} ${FLOAT_CLASSES[i % FLOAT_CLASSES.length]} px-5 md:px-7 py-3 md:py-4 rounded-full text-sm md:text-lg font-semibold cursor-default flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow`}
+                      style={{ animationDelay: `${i * 0.3}s` }}
+                    >
+                      <cap.icon size={18} />
+                      <span>{cap.label}</span>
+                    </motion.div>
+                  );
+                })}
               </div>
 
               <motion.p
