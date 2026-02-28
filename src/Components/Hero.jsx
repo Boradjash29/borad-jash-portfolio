@@ -104,6 +104,7 @@ export default function Hero() {
             onClick={() => handleTap(line1Ref)}
             style={{ textShadow: buildShadow(0) }}
           >
+            <span className="sr-only">Jash Borad - </span>
             Full Stack
           </h1>
           <motion.span
