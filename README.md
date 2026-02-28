@@ -1,134 +1,103 @@
-# Jash Borad - Portfolio Website
+# Jash Borad — Portfolio
 
-A modern, responsive portfolio website built with React and Vite, showcasing my work as a Full Stack Developer and ROS Lead at GCET Team Robocon.
+A modern, animated portfolio website built with React, Vite, and GSAP — showcasing my work as a Full Stack Developer & ROS Lead at GCET Team Robocon.
 
-## 🚀 Features
+## ✨ Features
 
-- **Modern Design**: Clean, professional UI with smooth animations
-- **Responsive Layout**: Works perfectly on desktop, tablet, and mobile devices
-- **Two-Column Hero**: Image showcase with professional introduction
-- **Active Navigation**: Scroll-based section highlighting in sidebar
-- **Project Showcase**: Detailed portfolio section with tech stack tags
-- **Skills & Experience**: Comprehensive display of technical abilities and work history
-- **Contact Section**: Easy-to-access contact information with social links
+- **3D Text Shadow** — Interactive hover/tap effect on hero typography
+- **Scroll-Stacking Cards** — GSAP-powered project cards that stack on scroll
+- **Custom Cursor** — Dot + trailing ring with hover states (desktop only)
+- **Smooth Scrolling** — Lenis-powered inertial scrolling
+- **Magnetic Navigation** — Cursor-following effect on nav links
+- **Floating Skill Pills** — Animated capability badges with CSS keyframes
+- **Responsive Design** — Optimized for desktop, tablet, and mobile
+- **Dark Theme** — Premium dark UI with accent colors per project
 
 ## 📁 Project Structure
 
 ```
-borad-portfolio/
-├── public/
-│   ├── images/          # Add your images here
-│   │   ├── profile.jpg  # Your profile photo (300x300px recommended)
-│   │   └── robocon.jpg  # Hero section image (800x600px recommended)
-│   └── documents/
-│       └── Jash_Borad_Resume.pdf  # Your resume PDF
-├── src/
-│   ├── Components/
-│   │   ├── Sidebar.jsx      # Navigation sidebar
-│   │   ├── Hero.jsx         # Hero/About section
-│   │   ├── Portfolio.jsx    # Projects showcase
-│   │   ├── Skills.jsx       # Technical skills
-│   │   ├── Experience.jsx   # Work experience
-│   │   ├── Education.jsx    # Education history
-│   │   └── Contact.jsx      # Contact information
-│   ├── App.jsx          # Main app component
-│   ├── main.jsx         # Entry point
-│   └── index.css        # Global styles
-└── package.json
+src/
+├── data/
+│   ├── constants.js       # Nav items, social links, animation presets
+│   ├── projects.js        # Project data (Portfolio + Marquee)
+│   └── profile.js         # Experience, education, skills, certifications
+├── Components/
+│   ├── Animations.jsx     # TextReveal, SlideReveal, MagneticWrap
+│   ├── ArrowIcon.jsx      # Shared arrow SVG component
+│   ├── CustomCursor.jsx   # Desktop custom cursor
+│   ├── Hero.jsx           # Hero section with 3D text effect
+│   ├── About.jsx          # Bio, interests, experience, education
+│   ├── Portfolio.jsx      # GSAP scroll-stacking project cards
+│   ├── Marquee.jsx        # Infinite scrolling project strip
+│   ├── Skills.jsx         # Tabbed skills, tech stacks, certifications
+│   └── Contact.jsx        # CTA, footer, social links
+├── App.jsx                # Layout, navigation, Lenis smooth scroll
+├── index.css              # Global styles, utilities, keyframes
+└── main.jsx               # Entry point
 ```
 
-## 🛠️ Setup Instructions
+## 🛠️ Tech Stack
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
+- **Framework**: React 19 + Vite 7
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion + GSAP + Lenis
+- **Icons**: Lucide React
+- **Font**: Manrope (Google Fonts)
 
-### Installation
+## 🚀 Getting Started
 
-1. Install dependencies:
 ```bash
+# Install dependencies
 npm install
-```
 
-2. Add your images to `public/images/`:
-   - `profile.jpg` - Your profile photo for the sidebar
-   - `robocon.jpg` - Your hero section image/video thumbnail
-
-3. Ensure your resume PDF is at:
-   - `public/documents/Jash_Borad_Resume.pdf`
-
-### Development
-
-Run the development server:
-```bash
+# Start dev server
 npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
 The site will be available at `http://localhost:5173`
 
-### Build for Production
+## 📦 Required Assets
 
-Create a production build:
-```bash
-npm run build
-```
+Place these files in the `public/` directory:
 
-Preview the production build:
-```bash
-npm run preview
-```
-
-## 🎨 Customization
-
-### Colors
-The main accent color is cyan (#00d4ff). To change it, search and replace in `src/index.css`.
-
-### Content
-Update your information in the respective component files:
-- Personal info: `Hero.jsx`
-- Projects: `Portfolio.jsx`
-- Skills: `Skills.jsx`
-- Work history: `Experience.jsx`
-- Education: `Education.jsx`
-- Contact: `Contact.jsx` and `Sidebar.jsx`
-
-## 📝 Tech Stack
-
-- **Framework**: React 19.2.0
-- **Build Tool**: Vite 7.3.1
-- **Styling**: Custom CSS with modern layout techniques
-- **Icons**: Inline SVG icons
-- **Deployment**: Compatible with Vercel, Netlify, GitHub Pages
+- `public/images/Profile.png` — Profile photo
+- `public/documents/Jash_Borad_Resume.pdf` — Downloadable resume
+- `public/favicon.svg` — Custom JB favicon (included)
 
 ## 🌐 Deployment
 
 ### Vercel (Recommended)
-1. Push your code to GitHub
-2. Import project in Vercel
-3. Deploy
+
+1. Push to GitHub
+2. Import in [Vercel](https://vercel.com)
+3. Deploy — zero config needed
 
 ### Netlify
-1. Run `npm run build`
-2. Deploy the `dist` folder
+
+1. `npm run build`
+2. Deploy the `dist/` folder
 
 ### GitHub Pages
-1. Add to `vite.config.js`:
+
+Add base path to `vite.config.js`:
+
 ```javascript
 export default defineConfig({
   plugins: [react()],
-  base: '/your-repo-name/'
-})
+  base: "/borad-jash-portfolio/",
+});
 ```
-2. Run `npm run build`
-3. Deploy the `dist` folder to gh-pages branch
-
-## 📄 License
-
-This project is open source and available for personal use.
 
 ## 👤 Author
 
-**Jash Borad**
-- Email: jashborad13@gmail.com
-- GitHub: [@Boradjash29](https://github.com/Boradjash29)
-- LinkedIn: [borad-jash-h2901](https://linkedin.com/in/borad-jash-h2901)
+**Jash Borad** — Full Stack Developer & Robotics Enthusiast
+
+- 📧 [jashborad13@gmail.com](mailto:jashborad13@gmail.com)
+- 🐙 [GitHub](https://github.com/Boradjash29)
+- 💼 [LinkedIn](https://linkedin.com/in/borad-jash-h2901)
