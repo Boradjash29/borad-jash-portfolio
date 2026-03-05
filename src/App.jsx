@@ -58,7 +58,6 @@ const SectionLoader = memo(function SectionLoader() {
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [inProjects, setInProjects] = useState(false);
 
   // Memoized Lenis initialization
   useEffect(() => {
@@ -103,12 +102,6 @@ function App() {
       if (!ticking) {
         requestAnimationFrame(() => {
           setScrolled(window.scrollY > 80);
-
-          const projectsEl = document.getElementById("projects");
-          if (projectsEl) {
-            const rect = projectsEl.getBoundingClientRect();
-            setInProjects(rect.top < 60 && rect.bottom > 60);
-          }
           ticking = false;
         });
         ticking = true;
@@ -127,9 +120,7 @@ function App() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const navBg = scrolled && !inProjects
-    ? "bg-bg-secondary/90 backdrop-blur-xl border-b border-white/5"
-    : "bg-transparent";
+  const navBg = "bg-transparent pointer-events-none";
 
   return (
     <ErrorBoundary>
@@ -150,28 +141,28 @@ function App() {
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ${navBg}`}>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 flex items-center justify-between h-14 sm:h-16 lg:h-20">
-          <MagneticWrap strength={0.4}>
+          <MagneticWrap strength={0.4} className="pointer-events-auto">
             <motion.a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              animate={{ opacity: (inProjects || menuOpen) ? 0 : 1, x: (inProjects || menuOpen) ? -20 : 0 }}
+              animate={{ opacity: (scrolled || menuOpen) ? 0 : 1, x: (scrolled || menuOpen) ? -20 : 0 }}
               transition={{ duration: 0.3 }}
               className="text-white font-bold text-lg sm:text-xl tracking-tight hover:text-white/90 transition-colors min-h-[44px] flex items-center"
-              style={{ pointerEvents: (inProjects || menuOpen) ? "none" : "auto" }}
+              style={{ pointerEvents: (scrolled || menuOpen) ? "none" : "auto" }}
             >
               || JB ||
             </motion.a>
           </MagneticWrap>
 
-          {/* Desktop nav - hidden when in projects or menu open */}
+          {/* Desktop nav - hidden when scrolled or menu open */}
           <motion.div
-            animate={{ opacity: (inProjects || menuOpen) ? 0 : 1, x: (inProjects || menuOpen) ? 20 : 0 }}
+            animate={{ opacity: (scrolled || menuOpen) ? 0 : 1, x: (scrolled || menuOpen) ? 20 : 0 }}
             transition={{ duration: 0.3 }}
             className="hidden md:flex items-center gap-10"
-            style={{ pointerEvents: (inProjects || menuOpen) ? "none" : "auto" }}
+            style={{ pointerEvents: (scrolled || menuOpen) ? "none" : "auto" }}
           >
             {NAV_ITEMS.map((item) => (
               <MagneticWrap key={item.id} strength={0.25}>
@@ -193,8 +184,8 @@ function App() {
 
           {/* Hamburger menu */}
           <div 
-            className="hamburger-wrapper"
-            data-show-desktop={inProjects || menuOpen ? "true" : "false"}
+            className="hamburger-wrapper pointer-events-auto"
+            data-show-desktop={scrolled || menuOpen ? "true" : "false"}
           >
             <HamburgerMenu 
               isOpen={menuOpen} 

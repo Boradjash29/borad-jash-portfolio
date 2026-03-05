@@ -10,7 +10,7 @@ const Skills = memo(function Skills() {
   const [activeTab, setActiveTab] = useState("capabilities");
 
   return (
-    <section id="skills" className="relative z-10 bg-[#f5f5f0] text-[white] py-16 sm:py-20 lg:py-28 xl:py-36 px-4 sm:px-6 lg:px-12 overflow-hidden">
+    <section id="skills" className="relative z-10 bg-bg-secondary text-white py-16 sm:py-20 lg:py-28 xl:py-36 px-4 sm:px-6 lg:px-12 overflow-hidden">
       <div className="max-w-[1200px] mx-auto">
 
         {/* Section Heading for SEO */}
@@ -30,8 +30,8 @@ const Skills = memo(function Skills() {
               onClick={() => setActiveTab(tab.id)}
               className={`tracking-mono transition-all duration-300 pb-1 cursor-pointer ${
                 activeTab === tab.id
-                  ? "text-[white] border-b-2 border-[white]"
-                  : "text-[white]/40 hover:text-[white]/70"
+                  ? "text-white border-b-2 border-white"
+                  : "text-white/40 hover:text-white/70"
               }`}
             >
               {activeTab === tab.id ? `( ${tab.label} )` : tab.label}
@@ -77,7 +77,7 @@ const Skills = memo(function Skills() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
-                className="text-center text-[white]/40 text-xs sm:text-sm mt-6 sm:mt-8 hidden sm:block"
+                className="text-center text-white/40 text-xs sm:text-sm mt-6 sm:mt-8 hidden sm:block"
               >
                 Hover to explore...
               </motion.p>
@@ -99,16 +99,16 @@ const Skills = memo(function Skills() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="flex flex-col lg:flex-row lg:items-start border-b border-[white]/10 pb-4 sm:pb-6"
+                  className="flex flex-col lg:flex-row lg:items-start border-b border-white/10 pb-4 sm:pb-6"
                 >
-                  <h3 className="font-semibold text-base sm:text-lg text-[white] mb-2 sm:mb-3 lg:mb-0 lg:w-1/4">
+                  <h3 className="font-semibold text-base sm:text-lg text-white mb-2 sm:mb-3 lg:mb-0 lg:w-1/4">
                     {stack.category}
                   </h3>
                   <div className="flex flex-wrap gap-1.5 sm:gap-2 lg:w-3/4">
                     {stack.items.map((item) => (
                       <span
                         key={item}
-                        className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-[white]/5 text-[white]/70 border border-[white]/10 hover:bg-[white]/10 hover:border-[white]/20 transition-colors cursor-default"
+                        className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-white/5 text-white/70 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-colors cursor-default"
                       >
                         {item}
                       </span>
@@ -129,7 +129,7 @@ const Skills = memo(function Skills() {
               className="space-y-0"
             >
               <div className="mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-[white] flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                   <Award size={18} className="sm:w-5 sm:h-5 text-accent" /> Certifications
                 </h3>
               </div>
@@ -139,15 +139,15 @@ const Skills = memo(function Skills() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between py-4 sm:py-5 border-b border-[white]/10 group"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between py-4 sm:py-5 border-b border-white/10 group"
                 >
                   <div>
-                    <strong className="text-[white] font-semibold text-sm sm:text-base group-hover:text-accent transition-colors">
+                    <strong className="text-white font-semibold text-sm sm:text-base group-hover:text-accent transition-colors">
                       {cert.name}
                     </strong>
-                    <span className="text-[white]/50 text-xs sm:text-sm ml-1 sm:ml-2 block sm:inline mt-0.5 sm:mt-0">{cert.detail}</span>
+                    <span className="text-white/50 text-xs sm:text-sm ml-1 sm:ml-2 block sm:inline mt-0.5 sm:mt-0">{cert.detail}</span>
                   </div>
-                  <span className="tracking-mono text-[white]/30 text-xs sm:text-sm mt-1 sm:mt-0 flex-shrink-0">
+                  <span className="tracking-mono text-white/30 text-xs sm:text-sm mt-1 sm:mt-0 flex-shrink-0">
                     {cert.date}
                   </span>
                 </motion.div>
