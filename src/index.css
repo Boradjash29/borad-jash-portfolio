@@ -8,7 +8,8 @@
  * ============================================ */
 
 /* Lenis smooth scroll */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 .lenis.lenis-smooth {
@@ -27,20 +28,25 @@ html.lenis, html.lenis body {
 
 @theme {
   --color-dark: #101318;
+  --color-bg-primary: #0a0a0c;
+  --color-bg-secondary: #101318;
+  --color-accent: #ebda28;
+  --color-text-primary: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.6);
   --font-primary: "Manrope", sans-serif;
-  
+
   /* Spacing scale (8px base) */
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
-  --space-16: 4rem;    /* 64px */
-  --space-20: 5rem;    /* 80px */
-  --space-24: 6rem;    /* 96px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
 }
 
 @layer base {
@@ -55,8 +61,8 @@ html.lenis, html.lenis body {
     overflow-x: hidden;
   }
   body {
-    background: #101318;
-    color: #ffffff;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
     font-family: "Manrope", sans-serif;
     overflow-x: hidden;
     line-height: 1.6;
@@ -65,18 +71,24 @@ html.lenis, html.lenis body {
     /* Mobile-first font size */
     font-size: 16px;
   }
-  
+
   /* Responsive base font sizing */
   @media (min-width: 640px) {
-    body { font-size: 16px; }
+    body {
+      font-size: 16px;
+    }
   }
   @media (min-width: 1024px) {
-    body { font-size: 17px; }
+    body {
+      font-size: 17px;
+    }
   }
   @media (min-width: 1440px) {
-    body { font-size: 18px; }
+    body {
+      font-size: 18px;
+    }
   }
-  
+
   ::-webkit-scrollbar {
     width: 4px;
   }
@@ -90,22 +102,28 @@ html.lenis, html.lenis body {
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }
-  
+
   /* Ensure images don't overflow */
-  img, video, canvas, svg {
+  img,
+  video,
+  canvas,
+  svg {
     max-width: 100%;
     height: auto;
   }
-  
+
   /* Touch-friendly tap targets */
-  a, button {
+  a,
+  button {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Reduce motion for accessibility */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -117,14 +135,14 @@ html.lenis, html.lenis body {
   .font-primary {
     font-family: "Manrope", sans-serif;
   }
-  
+
   .tracking-mono {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     font-size: clamp(0.6rem, 1.5vw, 0.7rem);
     font-weight: 500;
   }
-  
+
   /* Container utilities */
   .container-responsive {
     width: 100%;
@@ -152,7 +170,7 @@ html.lenis, html.lenis body {
       padding-right: 4rem;
     }
   }
-  
+
   /* Original hero-title for backwards compatibility */
   .hero-title {
     font-size: clamp(2.5rem, 12vw, 11rem);
@@ -161,7 +179,7 @@ html.lenis, html.lenis body {
     letter-spacing: -0.03em;
     color: #ffffff;
   }
-  
+
   /* Mobile-first hero title classes with fluid typography */
   .hero-title-primary {
     font-size: clamp(2.5rem, 8vw, 9rem);
@@ -177,7 +195,7 @@ html.lenis, html.lenis body {
     letter-spacing: -0.03em;
     color: #ffffff;
   }
-  
+
   /* Section headings - fluid typography */
   .section-heading {
     font-size: clamp(2rem, 5vw, 4rem);
@@ -185,7 +203,7 @@ html.lenis, html.lenis body {
     line-height: 1.1;
     letter-spacing: -0.02em;
   }
-  
+
   /* Body text - fluid */
   .text-fluid-sm {
     font-size: clamp(0.875rem, 1.5vw, 1rem);
@@ -199,7 +217,7 @@ html.lenis, html.lenis body {
   .text-fluid-xl {
     font-size: clamp(1.25rem, 3vw, 2rem);
   }
-  
+
   /* Hide on mobile, show on desktop and vice versa */
   .mobile-only {
     display: block;
@@ -215,7 +233,7 @@ html.lenis, html.lenis body {
       display: block;
     }
   }
-  
+
   /* Responsive section padding */
   .section-padding {
     padding-top: 4rem;
@@ -259,7 +277,11 @@ html.lenis, html.lenis body {
 
 /* Reduce animations on mobile for performance */
 @media (max-width: 768px) {
-  .float-pill-1, .float-pill-2, .float-pill-3, .float-pill-4, .float-pill-5 {
+  .float-pill-1,
+  .float-pill-2,
+  .float-pill-3,
+  .float-pill-4,
+  .float-pill-5 {
     animation: none !important;
   }
 }
@@ -267,27 +289,60 @@ html.lenis, html.lenis body {
 /* Floating pill animations (Skills section) - desktop only */
 @media (min-width: 769px) {
   @keyframes floatPill {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-12px) rotate(2deg); }
-    50% { transform: translateY(-6px) rotate(-1deg); }
-    75% { transform: translateY(-18px) rotate(1.5deg); }
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-12px) rotate(2deg);
+    }
+    50% {
+      transform: translateY(-6px) rotate(-1deg);
+    }
+    75% {
+      transform: translateY(-18px) rotate(1.5deg);
+    }
   }
   @keyframes floatPill2 {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    33% { transform: translateY(-15px) rotate(-2deg); }
-    66% { transform: translateY(-8px) rotate(3deg); }
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-15px) rotate(-2deg);
+    }
+    66% {
+      transform: translateY(-8px) rotate(3deg);
+    }
   }
   @keyframes floatPill3 {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    20% { transform: translateY(-10px) rotate(1.5deg); }
-    60% { transform: translateY(-20px) rotate(-2deg); }
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    20% {
+      transform: translateY(-10px) rotate(1.5deg);
+    }
+    60% {
+      transform: translateY(-20px) rotate(-2deg);
+    }
   }
 
-  .float-pill-1 { animation: floatPill 6s ease-in-out infinite; }
-  .float-pill-2 { animation: floatPill2 7s ease-in-out infinite; }
-  .float-pill-3 { animation: floatPill3 8s ease-in-out infinite; }
-  .float-pill-4 { animation: floatPill 5s ease-in-out infinite reverse; }
-  .float-pill-5 { animation: floatPill2 9s ease-in-out infinite; }
+  .float-pill-1 {
+    animation: floatPill 6s ease-in-out infinite;
+  }
+  .float-pill-2 {
+    animation: floatPill2 7s ease-in-out infinite;
+  }
+  .float-pill-3 {
+    animation: floatPill3 8s ease-in-out infinite;
+  }
+  .float-pill-4 {
+    animation: floatPill 5s ease-in-out infinite reverse;
+  }
+  .float-pill-5 {
+    animation: floatPill2 9s ease-in-out infinite;
+  }
 }
 
 /* Mobile touch-friendly spacing */
@@ -356,7 +411,7 @@ html.lenis, html.lenis body {
 
 /* Font loading optimization */
 .font-loaded body {
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 
 /* Prevent content shift from fonts */

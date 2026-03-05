@@ -8,7 +8,6 @@ import { MagneticWrap } from "./Components/Animations";
 import HamburgerMenu from "./Components/HamburgerMenu";
 
 // Lazy load heavy components for code splitting
-const Hero = lazy(() => import("./Components/Hero"));
 const SplineSceneBasic = lazy(() => 
   import("./Components/SplineHero").then(m => ({ default: m.SplineSceneBasic }))
 );
@@ -50,7 +49,7 @@ class ErrorBoundary extends Component {
 // Loading fallback component
 const SectionLoader = memo(function SectionLoader() {
   return (
-    <div className="min-h-[50vh] flex items-center justify-center bg-[#101318]">
+    <div className="min-h-[50vh] flex items-center justify-center bg-bg-secondary">
       <div className="w-8 h-8 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
     </div>
   );
@@ -129,12 +128,12 @@ function App() {
   }, []);
 
   const navBg = scrolled && !inProjects
-    ? "bg-[#101318]/90 backdrop-blur-xl border-b border-white/5"
+    ? "bg-bg-secondary/90 backdrop-blur-xl border-b border-white/5"
     : "bg-transparent";
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen bg-[#101318] text-white font-primary relative">
+    <div className="min-h-screen bg-bg-secondary text-white font-primary relative">
       {/* Custom cursor - lazy loaded, desktop only */}
       <Suspense fallback={null}>
         <CustomCursor />
@@ -142,7 +141,7 @@ function App() {
 
       {/* Page load overlay - GPU accelerated */}
       <motion.div
-        className="fixed inset-0 bg-[#101318] z-[100] pointer-events-none will-change-[opacity]"
+        className="fixed inset-0 bg-bg-secondary z-[100] pointer-events-none will-change-[opacity]"
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}

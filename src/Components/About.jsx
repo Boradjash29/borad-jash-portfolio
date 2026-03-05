@@ -5,7 +5,7 @@ import { experiences, education, interests } from "../data/profile";
 
 const About = memo(function About() {
   return (
-    <section id="about" className="relative bg-[#101318] py-16 sm:py-20 lg:py-28 xl:py-36 px-4 sm:px-6 lg:px-12">
+    <section id="about" className="relative bg-bg-secondary py-16 sm:py-20 lg:py-28 xl:py-36 px-4 sm:px-6 lg:px-12">
       <div className="max-w-[1200px] mx-auto">
 
         <motion.h2 {...fadeUp} className="tracking-mono text-white/40 mb-8 sm:mb-12 lg:mb-16">
@@ -114,7 +114,7 @@ const About = memo(function About() {
                 </div>
                 <div className="flex flex-row sm:flex-col justify-between sm:items-end sm:w-1/3 mt-2 sm:mt-0">
                   <span className="tracking-mono text-white/30 text-xs sm:text-sm">{edu.year}</span>
-                  <p className={`text-xs sm:text-sm font-semibold ${edu.highlight ? "text-emerald-400" : "text-white/60"}`}>
+                  <p className={`text-xs sm:text-sm font-semibold ${edu.highlight ? "text-accent" : "text-white/60"}`}>
                     {edu.grade}
                   </p>
                 </div>

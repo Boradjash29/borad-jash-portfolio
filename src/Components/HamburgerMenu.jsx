@@ -55,6 +55,7 @@ export default function HamburgerMenu({ isOpen, toggle, className = "" }) {
 
           <g stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
             <motion.path
+              d={variants.top.closed.d}
               variants={variants.top}
               animate={isOpen ? "open" : "closed"}
               transition={{
@@ -70,6 +71,7 @@ export default function HamburgerMenu({ isOpen, toggle, className = "" }) {
               transition={{ duration: 0.3 }}
             />
             <motion.path
+              d={variants.bottom.closed.d}
               variants={variants.bottom}
               animate={isOpen ? "open" : "closed"}
               transition={{
@@ -89,7 +91,7 @@ export default function HamburgerMenu({ isOpen, toggle, className = "" }) {
 
         {/* Ripple effect on click/hover */}
         <motion.div
-          className="absolute inset-0 rounded-full border-2 border-[#EBDA28]/30 pointer-events-none"
+          className="absolute inset-0 rounded-full border-2 border-accent/30 pointer-events-none"
           initial={{ scale: 0.5, opacity: 0 }}
           whileHover={{ scale: 1.4, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}

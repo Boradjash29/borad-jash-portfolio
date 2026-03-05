@@ -103,9 +103,7 @@ export const projects = [
 ];
 
 /** Marquee preview data — derived from projects, lighter version */
-export const projectPreviews = projects.map(({ title, type, accent, bg }) => ({
+export const projectPreviews = projects.map(({ title, type }) => ({
   title: title.length > 22 ? title.slice(0, 22) : title,
   type: type.charAt(0) + type.slice(1).toLowerCase(),
-  accent,
-  bg,
 }));

@@ -31,12 +31,21 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
           exit="exit"
         >
           {/* Morphing SVG Background */}
-          <svg className="absolute top-0 w-full h-[calc(100%+100px)] fill-[#101318]" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <motion.path variants={curveVariants} />
+          <svg
+            className="absolute top-0 w-full h-[calc(100%+100px)] fill-bg-secondary"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <motion.path
+              initial="initial"
+              animate="opened"
+              exit="exit"
+              variants={curveVariants}
+            />
           </svg>
 
           {/* Menu Content */}
-          <div 
+          <div
             className="relative z-10 h-full w-full flex flex-col items-center justify-center pointer-events-auto px-6"
             onClick={(e) => {
               if (e.target === e.currentTarget) toggle();
@@ -49,30 +58,28 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
                     initial={{ y: 80, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 80, opacity: 0 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: isOpen ? 0.35 + (i * 0.08) : 0, 
-                      ease: [0.33, 1, 0.68, 1] 
+                    transition={{
+                      duration: 0.4,
+                      delay: isOpen ? 0.35 + i * 0.08 : 0,
+                      ease: [0.33, 1, 0.68, 1],
                     }}
                     onClick={() => {
-                        scrollTo(item.id);
+                      scrollTo(item.id);
                     }}
                     className="group relative text-3xl sm:text-4xl lg:text-7xl font-bold tracking-tighter text-white/40 hover:text-white transition-colors duration-300 py-2 min-h-[48px] flex items-center"
                   >
-                    <span className="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-mono opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0 text-[#EBDA28]">
+                    <span className="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-mono opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0 text-accent">
                       0{i + 1}
                     </span>
                     {item.label}
-                    <motion.div 
-                        className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#EBDA28] group-hover:w-full transition-all duration-500"
-                    />
+                    <motion.div className="absolute bottom-0 left-0 w-0 h-[2px] bg-accent group-hover:w-full transition-all duration-500" />
                   </motion.button>
                 </div>
               ))}
             </div>
 
             {/* Bottom Credits/Info */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -80,7 +87,9 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
               className="absolute bottom-8 sm:bottom-12 flex flex-col items-center gap-3 sm:gap-4 px-4"
             >
               <div className="w-10 sm:w-12 h-px bg-white/20" />
-              <p className="text-white/20 text-[9px] sm:text-[10px] tracking-widest uppercase text-center">Jash Borad &mdash; Portfolio 2026</p>
+              <p className="text-white/20 text-[9px] sm:text-[10px] tracking-widest uppercase text-center">
+                Jash Borad &mdash; Portfolio 2026
+              </p>
             </motion.div>
           </div>
         </motion.div>

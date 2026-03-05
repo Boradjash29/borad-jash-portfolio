@@ -24,7 +24,7 @@ const Contact = memo(function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="relative z-10 bg-[#101318] pt-16 sm:pt-20 lg:pt-28 xl:pt-36 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-12">
+    <section id="contact" className="relative z-10 bg-bg-secondary pt-16 sm:pt-20 lg:pt-28 xl:pt-36 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-12">
       <div className="max-w-[1200px] mx-auto">
 
         {/* CTA */}

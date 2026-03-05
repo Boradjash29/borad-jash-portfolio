@@ -124,7 +124,7 @@ const CustomCursor = memo(function CustomCursor() {
           width: hovered ? 60 : clicked ? 30 : 40,
           height: hovered ? 60 : clicked ? 30 : 40,
           borderRadius: "50%",
-          border: `1.5px solid ${hovered ? "#EBDA28" : "rgba(255,255,255,0.5)"}`,
+          border: `1.5px solid ${hovered ? "var(--color-accent)" : "rgba(255,255,255,0.5)"}`,
           opacity: hidden ? 0 : 1,
           transition: "opacity 0.2s, width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s ease-out",
           marginLeft: hovered ? -10 : clicked ? 5 : 0,
