@@ -42,7 +42,7 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
               if (e.target === e.currentTarget) toggle();
             }}
           >
-            <div className="flex flex-col gap-6 md:gap-10 items-center">
+            <div className="flex flex-col gap-4 sm:gap-6 lg:gap-10 items-center">
               {NAV_ITEMS.map((item, i) => (
                 <div key={item.id} className="overflow-hidden">
                   <motion.button
@@ -57,9 +57,9 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
                     onClick={() => {
                         scrollTo(item.id);
                     }}
-                    className="group relative text-4xl md:text-7xl font-bold tracking-tighter text-white/40 hover:text-white transition-colors duration-300 py-2"
+                    className="group relative text-3xl sm:text-4xl lg:text-7xl font-bold tracking-tighter text-white/40 hover:text-white transition-colors duration-300 py-2 min-h-[48px] flex items-center"
                   >
-                    <span className="absolute -left-8 top-1/2 -translate-y-1/2 text-sm font-mono opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0 text-[#EBDA28]">
+                    <span className="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 text-xs sm:text-sm font-mono opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0 text-[#EBDA28]">
                       0{i + 1}
                     </span>
                     {item.label}
@@ -77,10 +77,10 @@ export default function LiquidMenu({ isOpen, toggle, scrollTo }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0.8 }}
-              className="absolute bottom-12 flex flex-col items-center gap-4"
+              className="absolute bottom-8 sm:bottom-12 flex flex-col items-center gap-3 sm:gap-4 px-4"
             >
-              <div className="w-12 h-px bg-white/20" />
-              <p className="text-white/20 text-[10px] tracking-widest uppercase">Jash Borad &mdash; Portfolio 2026</p>
+              <div className="w-10 sm:w-12 h-px bg-white/20" />
+              <p className="text-white/20 text-[9px] sm:text-[10px] tracking-widest uppercase text-center">Jash Borad &mdash; Portfolio 2026</p>
             </motion.div>
           </div>
         </motion.div>

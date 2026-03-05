@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 
-export default function CustomCursor() {
+const CustomCursor = memo(function CustomCursor() {
   const cursorRef = useRef({ x: 0, y: 0 });
   const dotRef = useRef(null);
   const ringRef = useRef(null);
@@ -9,25 +9,30 @@ export default function CustomCursor() {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    // Skip on mobile/touch devices
+    const isMobile = window.matchMedia("(max-width: 768px)").matches || 
+                     window.matchMedia("(pointer: coarse)").matches;
     if (isMobile) return;
 
     let raf;
     let ringX = 0, ringY = 0;
 
+    // Use passive event listener for better scroll performance
     const onMouseMove = (e) => {
       cursorRef.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+        // Use translate3d for GPU acceleration
+        dotRef.current.style.transform = `translate3d(${e.clientX - 4}px, ${e.clientY - 4}px, 0)`;
       }
     };
 
     const animate = () => {
       const { x, y } = cursorRef.current;
-      ringX += (x - ringX) * 0.15;
-      ringY += (y - ringY) * 0.15;
+      ringX += (x - ringX) * 0.12; // Slightly slower for smoother feel
+      ringY += (y - ringY) * 0.12;
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+        // Use translate3d for GPU acceleration
+        ringRef.current.style.transform = `translate3d(${ringX - 20}px, ${ringY - 20}px, 0)`;
       }
       raf = requestAnimationFrame(animate);
     };
@@ -59,17 +64,24 @@ export default function CustomCursor() {
     let currentEls = attachHoverListeners();
     raf = requestAnimationFrame(animate);
 
+    // Throttled MutationObserver to reduce performance impact
+    let mutationTimeout;
     const observer = new MutationObserver(() => {
-      currentEls.forEach((el) => {
-        el.removeEventListener("mouseenter", onOverInteractive);
-        el.removeEventListener("mouseleave", onLeaveInteractive);
-      });
-      currentEls = attachHoverListeners();
+      if (mutationTimeout) return;
+      mutationTimeout = setTimeout(() => {
+        currentEls.forEach((el) => {
+          el.removeEventListener("mouseenter", onOverInteractive);
+          el.removeEventListener("mouseleave", onLeaveInteractive);
+        });
+        currentEls = attachHoverListeners();
+        mutationTimeout = null;
+      }, 200);
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       cancelAnimationFrame(raf);
+      if (mutationTimeout) clearTimeout(mutationTimeout);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -83,7 +95,10 @@ export default function CustomCursor() {
     };
   }, []);
 
-  const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
+  // Early return for mobile - check at render time too
+  const isMobile = typeof window !== "undefined" && 
+    (window.matchMedia("(max-width: 768px)").matches || 
+     window.matchMedia("(pointer: coarse)").matches);
   if (isMobile) return null;
 
   return (
@@ -98,22 +113,28 @@ export default function CustomCursor() {
           backgroundColor: "#fff",
           opacity: hidden ? 0 : 1,
           transition: "opacity 0.2s",
+          willChange: "transform",
+          backfaceVisibility: "hidden",
         }}
       />
       <div
         ref={ringRef}
         className="fixed top-0 left-0 z-[9998] pointer-events-none mix-blend-difference"
         style={{
-          width: 40,
-          height: 40,
+          width: hovered ? 60 : clicked ? 30 : 40,
+          height: hovered ? 60 : clicked ? 30 : 40,
           borderRadius: "50%",
-          border: "1.5px solid rgba(255,255,255,0.5)",
+          border: `1.5px solid ${hovered ? "#EBDA28" : "rgba(255,255,255,0.5)"}`,
           opacity: hidden ? 0 : 1,
-          transition: "opacity 0.2s, width 0.3s ease, height 0.3s ease, border-color 0.3s ease",
-          ...(hovered ? { width: 60, height: 60, borderColor: "#EBDA28", marginLeft: -10, marginTop: -10 } : {}),
-          ...(clicked ? { width: 30, height: 30, marginLeft: 5, marginTop: 5 } : {}),
+          transition: "opacity 0.2s, width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s ease-out",
+          marginLeft: hovered ? -10 : clicked ? 5 : 0,
+          marginTop: hovered ? -10 : clicked ? 5 : 0,
+          willChange: "transform",
+          backfaceVisibility: "hidden",
         }}
       />
     </>
   );
-}
+});
+
+export default CustomCursor;

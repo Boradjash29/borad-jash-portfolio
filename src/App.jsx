@@ -1,73 +1,148 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense, useCallback, memo, Component } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 import { NAV_ITEMS } from "./data/constants";
-import Hero from "./Components/Hero";
-import Marquee from "./Components/Marquee";
-import About from "./Components/About";
-import Portfolio from "./Components/Portfolio";
-import Skills from "./Components/Skills";
-import Contact from "./Components/Contact";
-import CustomCursor from "./Components/CustomCursor";
+
+// Critical components - load immediately
 import { MagneticWrap } from "./Components/Animations";
 import HamburgerMenu from "./Components/HamburgerMenu";
-import LiquidMenu from "./Components/LiquidMenu";
+
+// Lazy load heavy components for code splitting
+const Hero = lazy(() => import("./Components/Hero"));
+const SplineSceneBasic = lazy(() => 
+  import("./Components/SplineHero").then(m => ({ default: m.SplineSceneBasic }))
+);
+const Marquee = lazy(() => import("./Components/Marquee"));
+const About = lazy(() => import("./Components/About"));
+const Portfolio = lazy(() => import("./Components/Portfolio"));
+const Skills = lazy(() => import("./Components/Skills"));
+const Contact = lazy(() => import("./Components/Contact"));
+const CustomCursor = lazy(() => import("./Components/CustomCursor"));
+const LiquidMenu = lazy(() => import("./Components/LiquidMenu"));
+
+// Error boundary to catch and display errors
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-red-900 text-white p-8">
+          <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+          <pre className="bg-black/50 p-4 rounded overflow-auto text-sm">
+            {this.state.error?.toString()}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Loading fallback component
+const SectionLoader = memo(function SectionLoader() {
+  return (
+    <div className="min-h-[50vh] flex items-center justify-center bg-[#101318]">
+      <div className="w-8 h-8 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
+    </div>
+  );
+});
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [inProjects, setInProjects] = useState(false);
 
+  // Memoized Lenis initialization
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      // Performance optimizations
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
     });
 
+    let rafId;
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
+    // Throttled scroll event dispatch
+    let lastScrollTime = 0;
     lenis.on("scroll", () => {
-      window.dispatchEvent(new Event("scroll"));
+      const now = performance.now();
+      if (now - lastScrollTime > 16) { // ~60fps throttle
+        window.dispatchEvent(new Event("scroll"));
+        lastScrollTime = now;
+      }
     });
 
-    return () => lenis.destroy();
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
   }, []);
 
+  // Throttled scroll handler
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 80);
 
-      const projectsEl = document.getElementById("projects");
-      if (projectsEl) {
-        const rect = projectsEl.getBoundingClientRect();
-        setInProjects(rect.top < 60 && rect.bottom > 60);
+          const projectsEl = document.getElementById("projects");
+          if (projectsEl) {
+            const rect = projectsEl.getBoundingClientRect();
+            setInProjects(rect.top < 60 && rect.bottom > 60);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollTo = (id) => {
+  // Memoized callbacks to prevent re-renders
+  const toggleMenu = useCallback(() => setMenuOpen(prev => !prev), []);
+  
+  const scrollTo = useCallback((id) => {
     setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   const navBg = scrolled && !inProjects
     ? "bg-[#101318]/90 backdrop-blur-xl border-b border-white/5"
     : "bg-transparent";
 
   return (
+    <ErrorBoundary>
     <div className="min-h-screen bg-[#101318] text-white font-primary relative">
-      <CustomCursor />
+      {/* Custom cursor - lazy loaded, desktop only */}
+      <Suspense fallback={null}>
+        <CustomCursor />
+      </Suspense>
 
-      {/* Page load overlay */}
+      {/* Page load overlay - GPU accelerated */}
       <motion.div
-        className="fixed inset-0 bg-[#101318] z-[100] pointer-events-none"
+        className="fixed inset-0 bg-[#101318] z-[100] pointer-events-none will-change-[opacity]"
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -75,7 +150,7 @@ function App() {
 
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ${navBg}`}>
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 flex items-center justify-between h-14 sm:h-16 lg:h-20">
           <MagneticWrap strength={0.4}>
             <motion.a
               href="#"
@@ -85,14 +160,14 @@ function App() {
               }}
               animate={{ opacity: (inProjects || menuOpen) ? 0 : 1, x: (inProjects || menuOpen) ? -20 : 0 }}
               transition={{ duration: 0.3 }}
-              className="text-white font-bold text-lg tracking-tight"
+              className="text-white font-bold text-lg sm:text-xl tracking-tight hover:text-white/90 transition-colors min-h-[44px] flex items-center"
               style={{ pointerEvents: (inProjects || menuOpen) ? "none" : "auto" }}
             >
               || JB ||
             </motion.a>
           </MagneticWrap>
 
-          {/* Desktop nav */}
+          {/* Desktop nav - hidden when in projects or menu open */}
           <motion.div
             animate={{ opacity: (inProjects || menuOpen) ? 0 : 1, x: (inProjects || menuOpen) ? 20 : 0 }}
             transition={{ duration: 0.3 }}
@@ -117,40 +192,51 @@ function App() {
             ))}
           </motion.div>
 
-          {/* Desktop hamburger — projects section only */}
-          <AnimatePresence>
-            {inProjects && (
-              <HamburgerMenu 
-                isOpen={menuOpen} 
-                toggle={() => setMenuOpen(!menuOpen)} 
-                className="hidden md:block"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Mobile hamburger */}
-          <HamburgerMenu 
-            isOpen={menuOpen} 
-            toggle={() => setMenuOpen(!menuOpen)} 
-            className="md:hidden"
-          />
+          {/* Hamburger menu */}
+          <div 
+            className="hamburger-wrapper"
+            data-show-desktop={inProjects || menuOpen ? "true" : "false"}
+          >
+            <HamburgerMenu 
+              isOpen={menuOpen} 
+              toggle={toggleMenu} 
+            />
+          </div>
         </div>
       </nav>
 
-      {/* New Liquid Fullscreen Menu Reveal */}
-      <LiquidMenu 
-        isOpen={menuOpen} 
-        toggle={() => setMenuOpen(!menuOpen)} 
-        scrollTo={scrollTo}
-      />
+      {/* Liquid Fullscreen Menu */}
+      <Suspense fallback={null}>
+        <LiquidMenu 
+          isOpen={menuOpen} 
+          toggle={toggleMenu} 
+          scrollTo={scrollTo}
+        />
+      </Suspense>
 
-      <Hero />
-      <About />
-      <Portfolio />
-      <Marquee />
-      <Skills />
-      <Contact />
+      {/* Hero Section - Critical, loads first */}
+      <Suspense fallback={<SectionLoader />}>
+        <SplineSceneBasic />
+      </Suspense>
+      
+      {/* Below-fold sections - lazy loaded */}
+      <Suspense fallback={<SectionLoader />}>
+        <About />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <Portfolio />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <Marquee />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <Skills />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <Contact />
+      </Suspense>
     </div>
+    </ErrorBoundary>
   );
 }
 

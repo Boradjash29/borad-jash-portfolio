@@ -2,6 +2,7 @@ import { useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { EASE_OUT } from "../data/constants";
+import { SplineScene } from "@/Components/ui/splite";
 
 const SHADOW_LAYERS = 20;
 const SHADOW_COLOR = "rgb(235, 218, 40)";
@@ -58,6 +59,14 @@ export default function Hero() {
         }}
       />
 
+      {/* Spline Animation - Positioned to the Right */}
+      <div className="absolute top-0 right-0 w-full md:w-1/2 h-full z-0 pointer-events-none hidden md:block">
+        <SplineScene 
+          scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+          className="w-full h-full"
+        />
+      </div>
+
       {/* Top info bar */}
       <div className="absolute top-16 left-6 right-6 md:top-28 md:left-12 md:right-12">
         <div className="max-w-[1400px] mx-auto flex items-start justify-between">
@@ -89,12 +98,12 @@ export default function Hero() {
       </div>
 
       {/* Main hero typography */}
-      <div className="relative w-full max-w-[1400px] mx-auto mt-32 md:mt-0">
+      <div className="relative w-full max-w-[1400px] mx-auto mt-32 md:mt-0 z-10 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: EASE_OUT }}
-          className="flex items-baseline justify-between"
+          className="flex items-baseline justify-between pointer-events-auto"
         >
           <h1 
             ref={line1Ref}
@@ -121,7 +130,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.6, ease: EASE_OUT }}
-          className="flex items-baseline gap-6 md:gap-10"
+          className="flex items-baseline gap-6 md:gap-10 pointer-events-auto"
         >
           <motion.div
             initial={{ scaleX: 0 }}

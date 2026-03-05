@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../data/projects";
@@ -6,11 +6,17 @@ import ArrowIcon from "./ArrowIcon";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// How many vh of scroll each card transition occupies
-const VH_PER_CARD = 140; 
-const TOTAL_VH = (projects.length - 1) * VH_PER_CARD + 100;
+// Configure GSAP for better performance
+gsap.config({
+  force3D: true, // Force GPU acceleration
+  nullTargetWarn: false,
+});
 
-export default function Portfolio() {
+// How many vh of scroll each card transition occupies
+const VH_PER_CARD = 80;
+const TOTAL_VH = (projects.length - 1) * VH_PER_CARD + 10;
+
+const Portfolio = memo(function Portfolio() {
   const containerRef = useRef(null);
   const stickyRef = useRef(null);
 
@@ -19,6 +25,15 @@ export default function Portfolio() {
 
     const cards = gsap.utils.toArray(".project-card", stickyRef.current);
     if (cards.length === 0) return;
+
+    // Set will-change on animated elements for GPU hint
+    cards.forEach(card => {
+      card.style.willChange = "transform";
+      const content = card.querySelector(".card-content");
+      if (content) content.style.willChange = "transform, filter";
+      const bg = card.querySelector(".card-parallax-bg");
+      if (bg) bg.style.willChange = "transform";
+    });
 
     const ctx = gsap.context(() => {
       // Pin the section
@@ -32,75 +47,87 @@ export default function Portfolio() {
 
       cards.forEach((card, i) => {
         if (i === 0) {
-          // First card starts visible, just handle its own parallax
           gsap.fromTo(
             card.querySelector(".card-parallax-bg"),
-            { yPercent: -15 },
+            { yPercent: -15, force3D: true },
             {
               yPercent: 15,
+              force3D: true,
               ease: "none",
               scrollTrigger: {
                 trigger: containerRef.current,
                 start: "top top",
                 end: () => `+=${VH_PER_CARD}vh`,
-                scrub: true,
+                scrub: 0.5, // Slight smoothing for better performance
               }
             }
           );
           return;
         }
 
-        // Subsequent cards slide in from bottom
         const startOffset = i * VH_PER_CARD;
 
-        // Slide in
+        // Slide in with GPU acceleration
         gsap.fromTo(card, 
-          { yPercent: 100 },
+          { yPercent: 100, force3D: true },
           {
             yPercent: 0,
-            ease: "none", // Critical for 1:1 proportional scroll
+            force3D: true,
+            ease: "none",
             scrollTrigger: {
               trigger: containerRef.current,
               start: () => `top+=${startOffset}vh top`,
-              end: () => `top+=${startOffset + 100}vh top`,
-              scrub: true,
+              end: () => `top+=${startOffset + VH_PER_CARD * 0.7}vh top`,
+              scrub: 0.5,
             }
           }
         );
 
-        // Previous card scales down/dims as this one covers it
+        // Previous card scales down
         const prevCard = cards[i - 1];
         gsap.to(prevCard.querySelector(".card-content"), {
           scale: 0.9,
           filter: "brightness(0.3)",
+          force3D: true,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
             start: () => `top+=${startOffset}vh top`,
-            end: () => `top+=${startOffset + 100}vh top`,
-            scrub: true,
+            end: () => `top+=${startOffset + VH_PER_CARD * 0.7}vh top`,
+            scrub: 0.5,
           }
         });
 
-        // Parallax for this card's background
+        // Parallax background
         gsap.fromTo(
           card.querySelector(".card-parallax-bg"),
-          { yPercent: -15 },
+          { yPercent: -15, force3D: true },
           {
             yPercent: 15,
+            force3D: true,
             ease: "none",
             scrollTrigger: {
               trigger: containerRef.current,
               start: () => `top+=${startOffset}vh top`,
               end: () => `top+=${startOffset + VH_PER_CARD}vh top`,
-              scrub: true,
+              scrub: 0.5,
             }
           }
         );
       });
     }, containerRef.current);
 
-    return () => ctx.revert();
+    return () => {
+      // Clean up will-change hints
+      cards.forEach(card => {
+        card.style.willChange = "auto";
+        const content = card.querySelector(".card-content");
+        if (content) content.style.willChange = "auto";
+        const bg = card.querySelector(".card-parallax-bg");
+        if (bg) bg.style.willChange = "auto";
+      });
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -109,9 +136,9 @@ export default function Portfolio() {
       <div style={{ height: `${TOTAL_VH}vh` }} className="relative">
         <div ref={stickyRef} className="h-screen w-full flex flex-col">
           {/* Header (stays fixed or moves slightly) */}
-          <div className="absolute top-0 left-0 w-full z-[100] px-6 md:px-14 lg:px-20 pt-8 pb-4 pointer-events-none">
-            <p className="tracking-mono text-xs text-white/30 uppercase mb-2">Selected Work</p>
-            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+          <div className="absolute top-0 left-0 w-full z-[100] px-4 sm:px-6 lg:px-14 xl:px-20 pt-6 sm:pt-8 pb-4 pointer-events-none">
+            <p className="tracking-mono text-[10px] sm:text-xs text-white/30 uppercase mb-1 sm:mb-2">Selected Work</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white tracking-tight">
               Projects<span className="text-yellow-400">.</span>
             </h2>
           </div>
@@ -152,25 +179,25 @@ export default function Portfolio() {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10" />
 
                   {/* Text Content */}
-                  <div className="relative z-20 h-full flex flex-col justify-center p-8 md:p-14 lg:p-20 max-w-4xl">
+                  <div className="relative z-20 h-full flex flex-col justify-center p-4 pt-20 sm:p-6 sm:pt-24 lg:p-14 lg:pt-28 xl:p-20 max-w-4xl">
                     <div 
-                      className="w-12 h-1 mb-6 rounded-full" 
+                      className="w-8 sm:w-12 h-1 mb-4 sm:mb-6 rounded-full" 
                       style={{ backgroundColor: project.accent }}
                     />
-                    <p className="tracking-mono text-sm uppercase mb-2 font-medium" style={{ color: project.accent }}>
+                    <p className="tracking-mono text-xs sm:text-sm uppercase mb-1 sm:mb-2 font-medium" style={{ color: project.accent }}>
                       {project.type}
                     </p>
-                    <h3 className="text-4xl md:text-7xl font-bold text-white mb-6 leading-[0.9]">
+                    <h3 className="text-2xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 leading-[0.95]">
                       {project.title}
                     </h3>
-                    <div className="flex flex-wrap gap-2 mb-8">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-8">
                       {project.tech.map(t => (
-                        <span key={t} className="px-3 py-1 text-xs border border-white/10 rounded-full text-white/50 bg-white/5">
+                        <span key={t} className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs border border-white/10 rounded-full text-white/50 bg-white/5">
                           {t}
                         </span>
                       ))}
                     </div>
-                    <p className="text-white/60 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
+                    <p className="text-white/60 text-sm sm:text-base lg:text-lg xl:text-xl max-w-lg mb-6 sm:mb-10 leading-relaxed line-clamp-3 sm:line-clamp-none">
                       {project.description}
                     </p>
                     {project.link !== "#" && (
@@ -178,10 +205,10 @@ export default function Portfolio() {
                         href={project.link}
                         target="_blank"
                         rel="noreferrer"
-                        className="group flex items-center gap-4 w-fit px-8 py-4 rounded-full border border-white/20 hover:border-white/50 transition-all"
+                        className="group flex items-center gap-2 sm:gap-4 w-fit px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-full border border-white/20 hover:border-white/50 transition-all min-h-[44px]"
                       >
-                        <span className="text-white font-medium uppercase text-sm tracking-wider">Explore Project</span>
-                        <ArrowIcon className="text-white group-hover:translate-x-1 transition-transform" />
+                        <span className="text-white font-medium uppercase text-xs sm:text-sm tracking-wider">Explore Project</span>
+                        <ArrowIcon className="text-white group-hover:translate-x-1 transition-transform w-4 h-4 sm:w-5 sm:h-5" />
                       </a>
                     )}
                   </div>
@@ -193,4 +220,6 @@ export default function Portfolio() {
       </div>
     </section>
   );
-}
+});
+
+export default Portfolio;

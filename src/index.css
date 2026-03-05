@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* ===== RESPONSIVE BREAKPOINTS REFERENCE =====
+ * Mobile:       320px - 640px   (default / base)
+ * Tablet:       641px - 1024px  (sm: 640px, md: 768px, lg: 1024px)
+ * Laptop:       1025px - 1440px (lg: 1024px, xl: 1280px)
+ * Large:        1441px+         (2xl: 1536px)
+ * ============================================ */
+
 /* Lenis smooth scroll */
 html.lenis, html.lenis body {
   height: auto;
@@ -21,6 +28,19 @@ html.lenis, html.lenis body {
 @theme {
   --color-dark: #101318;
   --font-primary: "Manrope", sans-serif;
+  
+  /* Spacing scale (8px base) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
 }
 
 @layer base {
@@ -31,6 +51,8 @@ html.lenis, html.lenis body {
   }
   html {
     scroll-behavior: smooth;
+    /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
   }
   body {
     background: #101318;
@@ -40,7 +62,21 @@ html.lenis, html.lenis body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Mobile-first font size */
+    font-size: 16px;
   }
+  
+  /* Responsive base font sizing */
+  @media (min-width: 640px) {
+    body { font-size: 16px; }
+  }
+  @media (min-width: 1024px) {
+    body { font-size: 17px; }
+  }
+  @media (min-width: 1440px) {
+    body { font-size: 18px; }
+  }
+  
   ::-webkit-scrollbar {
     width: 4px;
   }
@@ -54,18 +90,70 @@ html.lenis, html.lenis body {
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }
+  
+  /* Ensure images don't overflow */
+  img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Touch-friendly tap targets */
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
   .font-primary {
     font-family: "Manrope", sans-serif;
   }
+  
   .tracking-mono {
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    font-size: 0.7rem;
+    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
     font-weight: 500;
   }
+  
+  /* Container utilities */
+  .container-responsive {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-responsive {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-responsive {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+  @media (min-width: 1440px) {
+    .container-responsive {
+      padding-left: 4rem;
+      padding-right: 4rem;
+    }
+  }
+  
+  /* Original hero-title for backwards compatibility */
   .hero-title {
     font-size: clamp(2.5rem, 12vw, 11rem);
     font-weight: 800;
@@ -73,28 +161,207 @@ html.lenis, html.lenis body {
     letter-spacing: -0.03em;
     color: #ffffff;
   }
+  
+  /* Mobile-first hero title classes with fluid typography */
+  .hero-title-primary {
+    font-size: clamp(2.5rem, 8vw, 9rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+  }
+  .hero-title-secondary {
+    font-size: clamp(2.2rem, 7vw, 8rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+  }
+  
+  /* Section headings - fluid typography */
+  .section-heading {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  
+  /* Body text - fluid */
+  .text-fluid-sm {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+  
+  /* Hide on mobile, show on desktop and vice versa */
+  .mobile-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .mobile-only {
+      display: none;
+    }
+    .desktop-only {
+      display: block;
+    }
+  }
+  
+  /* Responsive section padding */
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  @media (min-width: 640px) {
+    .section-padding {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+  @media (min-width: 1440px) {
+    .section-padding {
+      padding-top: 9rem;
+      padding-bottom: 9rem;
+    }
+  }
 }
 
-/* Floating pill animations (Skills section) */
-@keyframes floatPill {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-12px) rotate(2deg); }
-  50% { transform: translateY(-6px) rotate(-1deg); }
-  75% { transform: translateY(-18px) rotate(1.5deg); }
+/* Hamburger visibility - always on mobile, conditional on desktop */
+.hamburger-wrapper {
+  display: block;
+  transition: opacity 0.2s ease;
 }
-@keyframes floatPill2 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  33% { transform: translateY(-15px) rotate(-2deg); }
-  66% { transform: translateY(-8px) rotate(3deg); }
-}
-@keyframes floatPill3 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  20% { transform: translateY(-10px) rotate(1.5deg); }
-  60% { transform: translateY(-20px) rotate(-2deg); }
+@media (min-width: 768px) {
+  .hamburger-wrapper[data-show-desktop="false"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hamburger-wrapper[data-show-desktop="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
-.float-pill-1 { animation: floatPill 6s ease-in-out infinite; }
-.float-pill-2 { animation: floatPill2 7s ease-in-out infinite; }
-.float-pill-3 { animation: floatPill3 8s ease-in-out infinite; }
-.float-pill-4 { animation: floatPill 5s ease-in-out infinite reverse; }
-.float-pill-5 { animation: floatPill2 9s ease-in-out infinite; }
+/* Reduce animations on mobile for performance */
+@media (max-width: 768px) {
+  .float-pill-1, .float-pill-2, .float-pill-3, .float-pill-4, .float-pill-5 {
+    animation: none !important;
+  }
+}
+
+/* Floating pill animations (Skills section) - desktop only */
+@media (min-width: 769px) {
+  @keyframes floatPill {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-12px) rotate(2deg); }
+    50% { transform: translateY(-6px) rotate(-1deg); }
+    75% { transform: translateY(-18px) rotate(1.5deg); }
+  }
+  @keyframes floatPill2 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-15px) rotate(-2deg); }
+    66% { transform: translateY(-8px) rotate(3deg); }
+  }
+  @keyframes floatPill3 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    20% { transform: translateY(-10px) rotate(1.5deg); }
+    60% { transform: translateY(-20px) rotate(-2deg); }
+  }
+
+  .float-pill-1 { animation: floatPill 6s ease-in-out infinite; }
+  .float-pill-2 { animation: floatPill2 7s ease-in-out infinite; }
+  .float-pill-3 { animation: floatPill3 8s ease-in-out infinite; }
+  .float-pill-4 { animation: floatPill 5s ease-in-out infinite reverse; }
+  .float-pill-5 { animation: floatPill2 9s ease-in-out infinite; }
+}
+
+/* Mobile touch-friendly spacing */
+@media (max-width: 640px) {
+  .touch-target {
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* GPU-accelerated animations - use transform/opacity only */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Contain for layout isolation - improves reflow performance */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* Optimize scroll performance */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Reduce motion system preference - already defined in base */
+/* Add GPU hints for animated elements */
+.project-card {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.card-content {
+  will-change: transform, filter;
+}
+
+.card-parallax-bg {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Optimize Framer Motion elements */
+[data-framer-component-type] {
+  will-change: auto; /* Let Framer handle this */
+}
+
+/* Hide scrollbar during animations on mobile */
+@media (max-width: 768px) {
+  .animating {
+    overflow: hidden;
+  }
+}
+
+/* Font loading optimization */
+.font-loaded body {
+  font-family: 'Manrope', sans-serif;
+}
+
+/* Prevent content shift from fonts */
+html {
+  font-size: 16px;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
